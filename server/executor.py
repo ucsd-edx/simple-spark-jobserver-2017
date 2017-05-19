@@ -29,7 +29,7 @@ def is_system_ready():
 
 
 def get_spark_status(app_name):
-    r = requests.get(APP_STATUS_API).json()["completedapps"]
+    r = requests.get(SPARK_SERVER_JSON).json()["completedapps"]
     for t in r:
         if t["name"] == app_name:
             return t
