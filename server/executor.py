@@ -61,7 +61,7 @@ def update_result(app_name, status, detailed=False, streams=None):
                 spark["attempts"][0]["endTime"], TIME_FORMAT)
             r["duration"] = (t2 - t1).seconds
             '''
-            r["duration"] = spark["duration"]
+            r["duration"] = spark["duration"]/1000.0
     json.dump(r, open(os.path.join(RESULT_FOLDER, app_name + ".res"), "wb"))
     show_message("Result file for app %s (%s) is updated." %
                  (app_name, r["status"]))
