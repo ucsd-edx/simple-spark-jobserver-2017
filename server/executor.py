@@ -77,9 +77,14 @@ def save_streams(app_name, process):
     stdout = process.stdout.read()[-STREAM_LEN:]
     out_filepath = os.path.join(dirpath, app_name + "-stdout")
     open(out_filepath, "w").write(stdout)
-    stderr = process.stderr.read()[-STREAM_LEN:]
-    err_filepath = os.path.join(dirpath, app_name + "-stderr")
-    open(err_filepath, "w").write(process.stderr.read())
+    stderr = ""
+    if process.stderr is not None:
+        stderr = process.stderr.read()[-STREAM_LEN:]
+        err_filepath = os.path.join(dirpath, app_name + "-stderr")
+        open(err_filepath, "w").write(process.stderr.read())
+    else:
+        err_filepath = os.path.join(dirpath, app_name + "-stderr")
+        open(err_filepath, "w").write(stderr)
     return ((stdout, "%s/%s-stdout" % (rand_dir, app_name)),
             (stderr, "%s/%s-stderr" % (rand_dir, app_name)))
 
@@ -116,8 +121,9 @@ def run_program():
     show_message("Submitting a new file %s." % app_name)
     update_result(app_name, RUNNING_MESSAGE)
     start = datetime.now()
+    FNULL = open(os.devnull, 'w')
     process = subprocess.Popen((SUBMIT_COMMAND % (app_name, rt_path)).split(),
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                               stdout=subprocess.PIPE, stderr=FNULL)
     running_queue.append((app_name, process, start))
     show_message("New app %s is submitted." % app_name)
 
